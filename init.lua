@@ -234,15 +234,15 @@ local config = {
                         --   end,
                         -- },
 
-			{
-				'saecki/crates.nvim',
-				tag = 'v0.3.0',
-				requires = { 'nvim-lua/plenary.nvim' },
-				config = function()
-				  require('crates').setup()
+                        {
+                                'saecki/crates.nvim',
+                                tag = 'v0.3.0',
+                                requires = { 'nvim-lua/plenary.nvim' },
+                                config = function()
+                                        require('crates').setup()
 
-				end,
-			},
+                                end,
+                        },
                 },
                 ["neo-tree"] = {
                         filesystem = {
@@ -378,10 +378,10 @@ local config = {
                 --     ["~/%.config/foo/.*"] = "fooscript",
                 --   },
                 -- }
-		local crates = require('crates')
-		local opts = { noremap = true, silent = true }
-		vim.keymap.set('n', '<leader>crD', crates.open_documentation, opts)
-	end,
+                local crates = require('crates')
+                local opts = { noremap = true, silent = true }
+                vim.keymap.set('n', '<leader>crD', crates.open_documentation, opts)
+        end,
 }
 
 return config
