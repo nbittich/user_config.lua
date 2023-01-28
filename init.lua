@@ -26,7 +26,7 @@ local config = {
         },
 
         -- Set colorscheme to use
-        colorscheme = "default_theme",
+        colorscheme = "catppuccin",
 
         -- Add highlight groups in any theme
         highlights = {
@@ -122,7 +122,7 @@ local config = {
                         ["which-key"] = true,
                 },
         },
-
+        --
         -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
         diagnostics = {
                 virtual_text = true,
@@ -245,6 +245,49 @@ local config = {
         plugins = {
                 init = {
                         {
+                                "catppuccin/nvim",
+                                as = "catppuccin",
+                                config = function()
+                                        require("catppuccin").setup {
+                                                flavour = "mocha",
+                                                term_colors = true,
+                                                transparent_background = true,
+                                                no_italic = false,
+                                                no_bold = false,
+                                                styles = {
+                                                        comments = {},
+                                                        conditionals = {},
+                                                        loops = {},
+                                                        functions = {},
+                                                        keywords = {},
+                                                        strings = {},
+                                                        variables = {},
+                                                        numbers = {},
+                                                        booleans = {},
+                                                        properties = {},
+                                                        types = {},
+                                                },
+                                                color_overrides = {
+                                                        mocha = {
+                                                                base = "#000000",
+                                                                mantle = "#000000",
+                                                                crust = "#000000",
+                                                        },
+                                                },
+                                                highlight_overrides = {
+                                                        mocha = function(C)
+                                                                return {
+                                                                        TabLineSel = { bg = C.pink },
+                                                                        CmpBorder = { fg = C.surface2 },
+                                                                        Pmenu = { bg = C.none },
+                                                                        TelescopeBorder = { link = "FloatBorder" },
+                                                                }
+                                                        end,
+                                                },
+                                        }
+                                end,
+                        },
+                        {
                                 'saecki/crates.nvim',
                                 tag = 'v0.3.0',
                                 requires = { 'nvim-lua/plenary.nvim' },
@@ -272,6 +315,7 @@ local config = {
                                 }
                         },
                 },
+
                 -- All other entries override the require("<key>").setup({...}) call for default plugins
                 ["null-ls"] = function(config) -- overrides `require("null-ls").setup(config)`
                         -- config variable is the default configuration table for the setup function call
