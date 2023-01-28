@@ -131,7 +131,6 @@ local config = {
 
         -- Extend LSP configuration
         lsp = {
-                skip_setup = { "jdtls" },
                 -- enable servers that you already have installed without mason
                 servers = {
                         -- "pyright"
@@ -172,49 +171,18 @@ local config = {
 
                 -- Add overrides for LSP server settings, the keys are the name of the server
                 ["server-settings"] = {
-                        -- set jdtls server settings
-                        jdtls = function()
-                                -- use this function notation to build some variables
-                                local root_markers = { ".git", "pom.xml" }
-                                local root_dir = require("jdtls.setup").find_root(root_markers)
-                                local home = os.getenv('HOME')
-                                -- calculate workspace dir
-                                local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-                                local workspace_dir = home .. "/.workspace/" .. project_name
-                                os.execute("mkdir " .. workspace_dir)
-
-                                -- get the mason install path
-                                local install_path = require("mason-registry").get_package("jdtls"):get_install_path()
-
-                                -- get the current OS
-                                local os = "linux"
-
-                                -- return the server config
-                                return {
-                                        cmd = {
-                                                "java",
-                                                "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-                                                "-Dosgi.bundles.defaultStartLevel=4",
-                                                "-Declipse.product=org.eclipse.jdt.ls.core.product",
-                                                "-Dlog.protocol=true",
-                                                "-Dlog.level=ALL",
-                                                "-javaagent:" .. install_path .. "/lombok.jar",
-                                                "-Xms1g",
-                                                "--add-modules=ALL-SYSTEM",
-                                                "--add-opens",
-                                                "java.base/java.util=ALL-UNNAMED",
-                                                "--add-opens",
-                                                "java.base/java.lang=ALL-UNNAMED",
-                                                "-jar",
-                                                vim.fn.glob(install_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
-                                                "-configuration",
-                                                install_path .. "/config_" .. os,
-                                                "-data",
-                                                workspace_dir,
-                                        },
-                                        root_dir = root_dir,
-                                }
-                        end,
+                        -- example for addings schemas to yamlls
+                        -- yamlls = { -- override table for require("lspconfig").yamlls.setup({...})
+                        --   settings = {
+                        --     yaml = {
+                        --       schemas = {
+                        --         ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*.{yml,yaml}",
+                        --         ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
+                        --         ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
+                        --       },
+                        --     },
+                        --   },
+                        -- },
                 },
         },
 
@@ -244,6 +212,28 @@ local config = {
         -- Configure plugins
         plugins = {
                 init = {
+                        -- You can disable default plugins as follows:
+                        -- ["goolord/alpha-nvim"] = { disable = true },
+
+                        -- You can also add new plugins here as well:
+                        -- Add plugins, the packer syntax without the "use"
+                        -- { "andweeb/presence.nvim" },
+                        -- {
+                        --   "ray-x/lsp_signature.nvim",
+                        --   event = "BufRead",
+                        --   config = function()
+                        --     require("lsp_signature").setup()
+                        --   end,
+                        -- },
+
+                        -- We also support a key value style plugin definition similar to NvChad:
+                        -- ["ray-x/lsp_signature.nvim"] = {
+                        --   event = "BufRead",
+                        --   config = function()
+                        --     require("lsp_signature").setup()
+                        --   end,
+                        -- },
+
                         {
                                 'saecki/crates.nvim',
                                 tag = 'v0.3.0',
@@ -253,7 +243,6 @@ local config = {
 
                                 end,
                         },
-                        ["mfussenegger/nvim-jdtls"] = { module = "jdtls" }, -- load jdtls on module
                 },
                 ["neo-tree"] = {
                         filesystem = {
@@ -293,7 +282,6 @@ local config = {
                 -- use mason-lspconfig to configure LSP installations
                 ["mason-lspconfig"] = { -- overrides `require("mason-lspconfig").setup(...)`
                         -- ensure_installed = { "sumneko_lua" },
-                        ensure_installed = { "jdtls" }
                 },
                 -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
                 ["mason-null-ls"] = { -- overrides `require("mason-null-ls").setup(...)`
@@ -393,13 +381,6 @@ local config = {
                 local crates = require('crates')
                 local opts = { noremap = true, silent = true }
                 vim.keymap.set('n', '<leader>crD', crates.open_documentation, opts)
-                vim.api.nvim_create_autocmd("Filetype", {
-                        pattern = "java", -- autocmd to start jdtls
-                        callback = function()
-                                local config = astronvim.lsp.server_settings "jdtls"
-                                if config.root_dir and config.root_dir ~= "" then require("jdtls").start_or_attach(config) end
-                        end,
-                })
         end,
 }
 
