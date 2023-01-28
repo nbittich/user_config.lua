@@ -181,7 +181,7 @@ local config = {
                                 -- calculate workspace dir
                                 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
                                 local workspace_dir = home .. "/.workspace/" .. project_name
-                                os.execute("mkdir " .. workspace_dir)
+                                os.execute("mkdir -p " .. workspace_dir)
 
                                 -- get the mason install path
                                 local install_path = require("mason-registry").get_package("jdtls"):get_install_path()
