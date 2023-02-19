@@ -53,7 +53,7 @@ local config = {
             status_diagnostics_enabled = true, -- enable diagnostics in statusline
             icons_enabled = true, -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
             ui_notifications_enabled = true, -- disable notifications when toggling UI elements
-            heirline_bufferline = false, -- enable new heirline based bufferline (requires :PackerSync after changing)
+            heirline_bufferline = true, -- enable new heirline based bufferline (requires :PackerSync after changing)
         },
     },
     -- If you need more control, you can use the function()...end notation
@@ -331,84 +331,10 @@ local config = {
                 after = "nvim-treesitter",
                 config = function() require("nvim-treesitter.configs").setup {} end,
             },
-            {
-                "ziontee113/syntax-tree-surfer",
-                after = "nvim-treesitter",
-                config = function()
-                    require("syntax-tree-surfer").setup {}
 
-                    local opts = { noremap = true, silent = true }
-
-                    -- Normal Mode Swapping:
-                    -- Swap The Master Node relative to the cursor with it's siblings, Dot Repeatable
-                    vim.keymap.set("n", "vU", function()
-                        vim.opt.opfunc = "v:lua.STSSwapUpNormal_Dot"
-                        return "g@l"
-                    end, { silent = true, expr = true })
-                    vim.keymap.set("n", "vD", function()
-                        vim.opt.opfunc = "v:lua.STSSwapDownNormal_Dot"
-                        return "g@l"
-                    end, { silent = true, expr = true })
-
-                    -- Swap Current Node at the Cursor with it's siblings, Dot Repeatable
-                    vim.keymap.set("n", "vd", function()
-                        vim.opt.opfunc = "v:lua.STSSwapCurrentNodeNextNormal_Dot"
-                        return "g@l"
-                    end, { silent = true, expr = true })
-                    vim.keymap.set("n", "vu", function()
-                        vim.opt.opfunc = "v:lua.STSSwapCurrentNodePrevNormal_Dot"
-                        return "g@l"
-                    end, { silent = true, expr = true })
-
-                    -- Visual Selection from Normal Mode
-                    vim.keymap.set("n", "vx", "<cmd>STSSelectMasterNode<cr>", opts)
-                    vim.keymap.set("n", "vn", "<cmd>STSSelectCurrentNode<cr>", opts)
-
-                    -- Select Nodes in Visual Mode
-                    vim.keymap.set("x", "J", "<cmd>STSSelectNextSiblingNode<cr>", opts)
-                    vim.keymap.set("x", "K", "<cmd>STSSelectPrevSiblingNode<cr>", opts)
-                    vim.keymap.set("x", "H", "<cmd>STSSelectParentNode<cr>", opts)
-                    vim.keymap.set("x", "L", "<cmd>STSSelectChildNode<cr>", opts)
-
-                    -- Swapping Nodes in Visual Mode
-                    vim.keymap.set("x", "<A-j>", "<cmd>STSSwapNextVisual<cr>", opts)
-                    vim.keymap.set("x", "<A-k>", "<cmd>STSSwapPrevVisual<cr>", opts)
-                end,
-            },
             ["mfussenegger/nvim-jdtls"] = { module = "jdtls" }, -- load jdtls on module
         },
 
-        ["cmp"] = function(config)
-            local cmp_ok, cmp = pcall(require, "cmp")
-            local luasnip_ok, luasnip = pcall(require, "luasnip")
-
-            if cmp_ok and luasnip_ok then
-                config.mapping["<CR>"] = cmp.mapping.confirm()
-                config.mapping["<Tab>"] = cmp.mapping(function(fallback)
-                        if luasnip.expandable() then
-                            luasnip.expand()
-                        elseif luasnip.expand_or_jumpable() then
-                            luasnip.expand_or_jump()
-                        else
-                            fallback()
-                        end
-                    end, {
-                        "i",
-                        "s",
-                    })
-                config.mapping["<S-Tab>"] = cmp.mapping(function(fallback)
-                        if luasnip.jumpable( -1) then
-                            luasnip.jump( -1)
-                        else
-                            fallback()
-                        end
-                    end, {
-                        "i",
-                        "s",
-                    })
-            end
-            return config
-        end,
         ["neo-tree"] = {
             filesystem = {
                 filtered_items = {
@@ -530,45 +456,13 @@ local config = {
     -- augroups/autocommands and custom filetypes also this just pure lua so
     -- anything that doesn't fit in the normal config locations above can go here
     polish = function()
-        local map = vim.api.nvim_set_keymap
         local unmap = vim.api.nvim_del_keymap
 
         -- Undo some AstroVim mappings:
         -- unmap("n", "<leader>u")
         unmap("n", "<C-q>")
         unmap("n", "<C-s>")
-        unmap("n", "<leader>h")
-        unmap("n", "<leader>q")
-        unmap("n", "<leader>sb") -- use <leader>gb
-        unmap("n", "<leader>sh") -- use <leader>fh
-        unmap("n", "<leader>sm")
-        -- unmap("n", "<leader>tl") -- Not installed on bare metal
-        unmap("n", "<leader>tn")
-        unmap("n", "<leader>tp")
-        unmap("n", "<leader>w")
-        -- Packer/Mason keymaps:
-        unmap("n", "<leader>pA")
-        unmap("n", "<leader>pS")
-        unmap("n", "<leader>pc")
-        unmap("n", "<leader>pi")
-        unmap("n", "<leader>ps")
-        unmap("n", "<leader>pu")
-        unmap("n", "<leader>pv")
 
-        -- Allow gf to work for non-existing files
-        map("n", "gf", ":edit <cfile><cr>", { desc = "Edit file" })
-        map("v", "gf", ":edit <cfile><cr>", { desc = "Edit file" })
-        map("o", "gf", ":edit <cfile><cr>", { desc = "Edit file" })
-
-        map("n", "<f8>", ":cprev<cr>", { desc = "Previous item in quickfix list" })
-        map("n", "<f9>", ":cnext<cr>", { desc = "Next item in quickfix list" })
-        map("n", "<leader>qf", ":lua hu_toggle_qf()<cr>", { desc = "Toggle quickfix list" })
-
-        vim.api.nvim_create_augroup("slint_auto", { clear = true })
-        vim.api.nvim_create_autocmd(
-            { "BufNewFile", "BufRead" },
-            { group = "slint_auto", pattern = "*.slint", callback = function() vim.bo.filetype = "slint" end }
-        )
         -- Java
         vim.api.nvim_create_autocmd("Filetype", {
             pattern = "java", -- autocmd to start jdtls
@@ -579,5 +473,4 @@ local config = {
         })
     end,
 }
-
 return config
