@@ -331,6 +331,11 @@ local config = {
                 after = "nvim-treesitter",
                 config = function() require("nvim-treesitter.configs").setup {} end,
             },
+            {
+                "vuki656/package-info.nvim",
+                requires = "MunifTanjim/nui.nvim",
+                config = function() require("package-info").setup() end,
+            },
 
             ["mfussenegger/nvim-jdtls"] = { module = "jdtls" }, -- load jdtls on module
         },
