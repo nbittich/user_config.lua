@@ -10,8 +10,8 @@ local config = {
         remote = "origin", -- remote to use
         channel = "stable", -- "stable" or "nightly"
         version = "latest", -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
-        branch = "main", -- branch name (NIGHTLY ONLY)
-        commit = nil, -- commit hash (NIGHTLY ONLY)
+        branch = "main",   -- branch name (NIGHTLY ONLY)
+        commit = nil,      -- commit hash (NIGHTLY ONLY)
         pin_plugins = nil, -- nil, true, false (nil will pin plugins on stable only)
         skip_prompts = false, -- skip prompts about breaking changes
         show_changelog = true, -- show the changelog after performing an update
@@ -39,21 +39,21 @@ local config = {
         opt = {
             -- set to true or false etc.
             relativenumber = true, -- sets vim.opt.relativenumber
-            number = true, -- sets vim.opt.number
-            spell = false, -- sets vim.opt.spell
+            number = true,   -- sets vim.opt.number
+            spell = false,   -- sets vim.opt.spell
             signcolumn = "auto", -- sets vim.opt.signcolumn to auto
-            wrap = false, -- sets vim.opt.wrap
+            wrap = false,    -- sets vim.opt.wrap
         },
         g = {
-            mapleader = " ", -- sets vim.g.mapleader
-            autoformat_enabled = true, -- enable or disable auto formatting at start (lsp.formatting.format_on_save must be enabled)
-            cmp_enabled = true, -- enable completion at start
-            autopairs_enabled = true, -- enable autopairs at start
-            diagnostics_enabled = true, -- enable diagnostics at start
+            mapleader = " ",             -- sets vim.g.mapleader
+            autoformat_enabled = true,   -- enable or disable auto formatting at start (lsp.formatting.format_on_save must be enabled)
+            cmp_enabled = true,          -- enable completion at start
+            autopairs_enabled = true,    -- enable autopairs at start
+            diagnostics_enabled = true,  -- enable diagnostics at start
             status_diagnostics_enabled = true, -- enable diagnostics in statusline
-            icons_enabled = true, -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
+            icons_enabled = true,        -- disable icons in the UI (disable if no nerd font is available, requires :PackerSync after changing)
             ui_notifications_enabled = true, -- disable notifications when toggling UI elements
-            heirline_bufferline = true, -- enable new heirline based bufferline (requires :PackerSync after changing)
+            heirline_bufferline = true,  -- enable new heirline based bufferline (requires :PackerSync after changing)
         },
     },
     -- If you need more control, you can use the function()...end notation
@@ -305,7 +305,6 @@ local config = {
                     }
                 end,
             },
-
             {
                 "saecki/crates.nvim",
                 after = "nvim-cmp",
@@ -316,14 +315,14 @@ local config = {
                     -- Crates mappings:
                     local map = vim.api.nvim_set_keymap
                     map("n", "<leader>Ct", ":lua require('crates').toggle()<cr>",
-                        { desc = "Toggle extra crates.io information" })
+                    { desc = "Toggle extra crates.io information" })
                     map("n", "<leader>Cr", ":lua require('crates').reload()<cr>",
-                        { desc = "Reload information from crates.io" })
+                    { desc = "Reload information from crates.io" })
                     map("n", "<leader>CU", ":lua require('crates').upgrade_crate()<cr>", { desc = "Upgrade a crate" })
                     map("v", "<leader>CU", ":lua require('crates').upgrade_crates()<cr>",
-                        { desc = "Upgrade selected crates" })
+                    { desc = "Upgrade selected crates" })
                     map("n", "<leader>CA", ":lua require('crates').upgrade_all_crates()<cr>",
-                        { desc = "Upgrade all crates" })
+                    { desc = "Upgrade all crates" })
                 end,
             },
             {
@@ -336,10 +335,8 @@ local config = {
                 requires = "MunifTanjim/nui.nvim",
                 config = function() require("package-info").setup() end,
             },
-
             ["mfussenegger/nvim-jdtls"] = { module = "jdtls" }, -- load jdtls on module
         },
-
         ["neo-tree"] = {
             filesystem = {
                 filtered_items = {
@@ -359,7 +356,6 @@ local config = {
                 },
             },
         },
-
         -- All other entries override the require("<key>").setup({...}) call for default plugins
         ["null-ls"] = function(config) -- overrides `require("null-ls").setup(config)`
             -- config variable is the default configuration table for the setup function call
@@ -375,7 +371,8 @@ local config = {
             }
             return config -- return final config table
         end,
-        treesitter = { -- overrides `require("treesitter").setup(...)`
+        treesitter = {
+            -- overrides `require("treesitter").setup(...)`
             -- ensure_installed = { "lua" },
         },
         -- use mason-lspconfig to configure LSP installations
